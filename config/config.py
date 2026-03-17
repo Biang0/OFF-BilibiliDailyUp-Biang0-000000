@@ -29,9 +29,8 @@ UID_LIST = ['473837611', '1131457022', '433587902', '2026561407', '50329118', '4
 # 投币UP主的ID号,如果不修改，默认将用上面这个列表里的,可以选择自己喜欢的UP主
 # 获取UID的方法见README.md
 
-COOKIE_LIST = [
-    r"buvid3=AD30B5E5-C60A-93EF-4061-4380AA2F43EB66150infoc; b_nut=1740625166; _uuid=B211044F10-4FA8-3986-D10E6-D46D5F53133C98500infoc; fingerprint=3f78ebdcc7a3398b43234dc5a91ff8ea; buvid_fp_plain=undefined; buvid4=D70363DF-5C51-CBE5-FB82-C0803F99573C96834-025022702-gTcIbaPYCZFL0BBWj2earQ%3D%3D; buvid_fp=3f78ebdcc7a3398b43234dc5a91ff8ea; header_theme_version=CLOSE; enable_web_push=DISABLE; DedeUserID=258872082; DedeUserID__ckMd5=ee5a0e863dc38ae4; rpdid=|(J~JJRYYmRR0J'u~R|Yklk~|; hit-dyn-v2=1; enable_feed_channel=ENABLE; PVID=1; bp_video_offset_258872082=1044937282231992320; CURRENT_FNVAL=4048; bp_t_offset_258872082=1045221248289734656; home_feed_column=5; browser_resolution=1528-751; SESSDATA=374e6708%2C1758013870%2C58c9b%2A32CjCFZuGQew7xVVnygutL5p-gwwtfBbJO_tvPQFVqOerEIrqbLCqwqTvjk9Os85TJo2ISVnFZY21yR2NzLU9aTTF4aHFVRV9iRjlSeXhrMV82bUdLVkZ3bHhDUWdTWVZUaVJOTllTOWNTSTJWa0JYdE9ZVjhUYlRoS0dYR2p4M0hldzlrTVVyeGt3IIEC; bili_jct=c40793f6e49da8544cae4388c59ba989; sid=4h48sic6; bili_ticket=eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDI4Njg5MjQsImlhdCI6MTc0MjYwOTY2NCwicGx0IjotMX0.uyV2j6KwRqDfyx4O2EdwcpUpgxtwaaOqi84P39tLTZk; bili_ticket_expires=1742868864",  
-]
+# 从环境变量 BILIBILI 读取 Cookie
+COOKIE_LIST = [os.environ.get('BILIBILI', '')]
 # Bilibili的COOKIE获取的方法见README.md 支持多账号
 
 PUSH_OR_NOT = False
