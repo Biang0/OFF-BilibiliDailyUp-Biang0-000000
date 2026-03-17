@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -55,20 +57,28 @@ jobs:
           echo -e "脚本详情:\n\`\`\`bash\n$(cat script_output.log)\n\`\`\`\n" >> log.md
           rm -rf script_output.log
         env:
+          BILIBILI: ${{ secrets.BILIBILI }}
           COOKIES: ${{ secrets.COOKIES }}
           WECHAT_ID: ${{ secrets.WECHAT_ID }}
           WECHAT_SECRET: ${{ secrets.WECHAT_SECRET }}
           WECHAT_APP_ID: ${{ secrets.WECHAT_APP_ID }}
           SERVER_KEY: ${{ secrets.SERVER_KEY }}
 
-      - name: 提交日志到仓库
+      - name: 自动清理日志（只保留最新内容）
+        run: |
+          tail -n 2000 log.md > tmp_log.md
+          mv tmp_log.md log.md
+
+      - name: 自动提交并推送日志
         run: |
           git config --global --add safe.directory $GITHUB_WORKSPACE
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "${GIT_USER_NAME}"
+          git config --global user.email "${GIT_USER_EMAIL}"
 
           git add log.md
-          git pull origin main --no-rebase --autostash
           git commit -m "chore: 自动更新签到日志 $(date +'%Y-%m-%d')"
-          git push origin main
+          git push
+        env:
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
         continue-on-error: true
