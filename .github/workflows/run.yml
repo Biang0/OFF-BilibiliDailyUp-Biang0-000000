@@ -2,16 +2,16 @@ name: B站自动签到
 
 on:
   schedule:
-    - cron: '0 17 * * *'  # 每天凌晨1:00执行签到
-    - cron: '0 0 */3 * *' # 每3天清理一次日志
-  workflow_dispatch:     # 支持手动触发
+    - cron: '0 17 * * *'  # 每天凌晨 1:00 运行
+    - cron: '0 0 */3 * *' # 每3天清理日志
+  workflow_dispatch:
 
 jobs:
-  自动任务:
+  auto_task:  # 这里修复为英文，不报错
     runs-on: ubuntu-latest
     permissions:
-      actions: write       # 日志清理权限
-      contents: write      # 提交日志文件权限
+      actions: write
+      contents: write
 
     steps:
       - name: 拉取代码
@@ -30,22 +30,21 @@ jobs:
       - name: 执行B站签到
         run: python main.py
 
-      # 本地日志清理：只保留最近3天内容（精简为保留最新200行）
+      # 本地日志只保留最近3天（精简最新200行）
       - name: 清理本地日志
         run: |
           if [ -f log.md ]; then
-            tail -n 200 log.md > tmp_log.md && mv tmp_log.md log.md
+            tail -n 200 log.md > tmp && mv tmp log.md
           fi
 
-      # GitHub后台日志清理：只保留1天内的运行记录
+      # GitHub日志只保留 1 天
       - name: 清理GitHub运行日志
         uses: GitRML/delete-workflow-runs@main
         with:
           retain_days: 1
           keep_minimum_runs: 0
           delete_workflow_pattern: '*'
-          delete_consecutive_pages: 20
 
-      # 防止60天无活动被GitHub禁用
-      - name: 保活防止停止
-        run: echo "任务正常运行中，保持活跃"
+      # 防止60天停止
+      - name: 保活防止禁用
+        run: echo "keep alive"
