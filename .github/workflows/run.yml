@@ -1,50 +1,57 @@
-name: B站自动签到
+# 工作流名称（支持中文）
+name: "B站自动签到"
 
+# 触发条件：定时任务 + 手动触发
 on:
   schedule:
-    - cron: '0 17 * * *'  # 每天凌晨 1:00 运行
-    - cron: '0 0 */3 * *' # 每3天清理日志
-  workflow_dispatch:
+    - cron: "0 17 * * *"    # 每天 凌晨1点 执行签到
+    - cron: "0 0 */3 * *"   # 每3天 执行一次日志清理
+  workflow_dispatch:        # 允许手动触发运行
 
+# 任务主体（必须英文，不能用中文）
 jobs:
-  auto_task:  # 这里修复为英文，不报错
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: write
+  auto_task:
+    runs-on: ubuntu-latest  # 运行环境：最新版Ubuntu
+    permissions:            # 必需权限
+      actions: write        # 允许删除工作流日志
+      contents: write       # 允许修改本地日志文件
 
     steps:
-      - name: 拉取代码
+      # 步骤1：拉取仓库代码
+      - name: "拉取代码"
         uses: actions/checkout@v4
 
-      - name: 设置Python环境
+      # 步骤2：配置Python环境
+      - name: "设置Python环境"
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
-      - name: 安装依赖
+      # 步骤3：安装脚本依赖
+      - name: "安装依赖包"
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 执行B站签到
+      # 步骤4：运行B站签到脚本
+      - name: "执行B站自动签到"
         run: python main.py
 
-      # 本地日志只保留最近3天（精简最新200行）
-      - name: 清理本地日志
+      # 步骤5：清理本地日志文件 log.md（只保留最新内容）
+      - name: "清理本地日志"
         run: |
           if [ -f log.md ]; then
             tail -n 200 log.md > tmp && mv tmp log.md
           fi
 
-      # GitHub日志只保留 1 天
-      - name: 清理GitHub运行日志
+      # 步骤6：清理GitHub后台运行记录（只保留1天）
+      - name: "清理GitHub运行日志"
         uses: GitRML/delete-workflow-runs@main
         with:
-          retain_days: 1
-          keep_minimum_runs: 0
-          delete_workflow_pattern: '*'
+          retain_days: 1                # 只保留1天内的日志
+          keep_minimum_runs: 0          # 不强制保留任何运行记录
+          delete_workflow_pattern: "*"  # 清理所有工作流
 
-      # 防止60天停止
-      - name: 保活防止禁用
-        run: echo "keep alive"
+      # 步骤7：保活机制，防止60天无活动被禁用
+      - name: "保活防止60天停止"
+        run: echo "任务正常运行中"
