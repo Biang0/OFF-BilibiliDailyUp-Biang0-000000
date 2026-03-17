@@ -1,8 +1,6 @@
 name: test
 
 on:
-  # schedule:
-  #   - cron: '2 0 * * *'  
   workflow_dispatch:  
 
 jobs:
@@ -11,10 +9,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -26,6 +24,7 @@ jobs:
     - name: Run sign-in script
       run: python main.py
       env:
+        BILIBILI: ${{ secrets.BILIBILI }}  # ✅ 这个必须加！
         COOKIES: ${{ secrets.COOKIES }}
         WECHAT_ID: ${{ secrets.WECHAT_ID }}
         WECHAT_SECRET: ${{ secrets.WECHAT_SECRET }}
