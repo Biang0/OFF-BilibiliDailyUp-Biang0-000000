@@ -27,26 +27,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 执行B站自动签到并写入日志
-        run: |
-          echo "--- 执行时间: $(date +'%Y-%m-%d %H:%M:%S') ---" >> log.md
-          python main.py >> log.md 2>&1
-
-      - name: 提交日志到仓库
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add log.md
-          git commit -m "Update log" || true
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 清理本地日志
-        run: |
-          if [ -f log.md ]; then
-            tail -n 200 log.md > tmp && mv tmp log.md
-          fi
+      - name: 执行B站自动签到
+        run: python main.py
 
       - name: 清理GitHub运行日志
         uses: GitRML/delete-workflow-runs@main
