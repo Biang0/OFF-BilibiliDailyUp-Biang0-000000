@@ -6,41 +6,39 @@ LIKE_OR_NOT = False
 # 投币时是否点赞
 
 USE_ENVIRONMENT_VARIABLE = True
-# 从环境变量中读取CK 确保已经设置环境变量BILIBILI 只支持单个账号
+# 从环境变量中读取CK（环境变量名：BILIBILI）
+# 单账号：直接填CK；多账号：多个CK用英文逗号分隔（需配合main.py的拆分逻辑）
 
 COIN_OR_NOT = True
 # 是否投币
 
-COIN_NUM = -1
-# 投币数量 -1为完成所有也就是如果你已经投过1次那就只会投4次
-# 如果不是 -1 则指定投币数量范围1-5
+COIN_NUM = 5  # 修复：-1改为5，适配NUM_MODE=True的逻辑
+# 投币数量：
+# - 非NUM_MODE：-1=投满5次（补全当日投币上限）；1-5=指定投币次数
+# - NUM_MODE开启：仅投指定次数（1-5），-1无效
 
 SILVER2COIN_OR_NOT = True
 # 是否将银瓜子兑换为硬币
 
 STRICT_MODE = False
-# 是否开启严格模式，严格模式会保证至少5次成功投币，因为官方投币API存在缺陷，会有投币成功但是返回失败的情况
-# 默认开启严格模式，如果关闭则只会投币5次，无论成功失败，会出现少投币的情况，因为可能失败，但是不会造成浪费硬币的情况，自行选择
+# 严格模式：保证至少5次成功投币（解决API返回失败但实际投币成功的问题）
+# 关闭：仅投5次，无论成功失败（可能少投币，但不会浪费）
+
 NUM_MODE = True
-# 该模式与严格模式互斥,开启此模式,投币只会投COIN_NUM次,无论成功失败
+# 与严格模式互斥，开启后仅投COIN_NUM次（无论成功失败）
 
 UID_LIST = ['473837611', '1131457022', '433587902', '2026561407', '50329118']
-# 投币UP主的ID号,如果不修改，默认将用上面这个列表里的,可以选择自己喜欢的UP主
-# 获取UID的方法见README.md
+# 投币UP主的ID号，可替换为自己喜欢的UP主（获取方法见README.md）
 
-COOKIE_LIST = [
-    r""
-]
-# Bilibili的COOKIE获取的方法见README.md 支持多账号
+COOKIE_LIST = []  # 修复：移除冗余的r""，空列表更清晰
+# Bilibili的COOKIE（获取方法见README.md），支持多账号：["CK1", "CK2"]
 
 PUSH_OR_NOT = False
 TOKEN = ''
-# PUSH PLUS的TOKEN 官网为https://www.pushplus.plus
+# PUSH PLUS的TOKEN 官网：https://www.pushplus.plus
 
-# ==============================================
-# 这里修复了：PUST → PUSH
 WECHAT_PUSH_OR_NOT = False
-# ==============================================
+# 企业微信推送开关
 
 WECHAT_ID = ""
 # 企业ID
@@ -48,8 +46,8 @@ WECHAT_SECRET = ""
 # 企业应用secret
 WECHAT_APP_ID = ""
 # 企业应用的id
-# 企业应用推送 文档https://developer.work.weixin.qq.com/document/path/90236
+# 企业应用推送文档：https://developer.work.weixin.qq.com/document/path/90236
 
 SERVER_PUSH_OR_NOT = False
 SERVER_KEY = ""
-# 是否开启sever酱,有填写则推送,空字符串则不推送 https://sct.ftqq.com/sendkey获取key
+# Server酱推送开关（key获取：https://sct.ftqq.com/sendkey）
