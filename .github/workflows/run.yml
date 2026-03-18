@@ -27,20 +27,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 👇 👇 👇 这里会自动隐藏所有UID和用户名！
-      - name: 执行签到并隐藏隐私
-        run: |
-          python main.py > run.log 2>&1
-          sed -i "s/[0-9]\{8,12\}/***/g" run.log
-          sed -i "s/用户[^,]*，uid/用户***，uid/g" run.log
-          cat run.log >> log.md
-          rm run.log
-
-      - name: 清理本地日志
-        run: |
-          if [ -f log.md ]; then
-            tail -n 100 log.md > tmp && mv tmp log.md
-          fi
+      - name: 执行B站自动签到
+        run: python main.py
 
       - name: 清理GitHub运行日志
         uses: GitRML/delete-workflow-runs@main
