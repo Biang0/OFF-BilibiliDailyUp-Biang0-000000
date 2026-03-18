@@ -5,7 +5,7 @@ The config for this script, you can read the description in README.md
 LIKE_OR_NOT = False
 # 投币时是否点赞
 
-USE_ENVIRONMENT_VARIABLE = True
+USE_ENVIRONMENT_VARIABLE = False
 # 从环境变量中读取CK 确保已经设置环境变量BILIBILI 只支持单个账号
 
 COIN_OR_NOT = True
