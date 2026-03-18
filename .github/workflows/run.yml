@@ -1,12 +1,10 @@
-# 工作流名称（支持中文）
 name: "B站自动签到"
 
-# 触发条件：定时任务 + 手动触发
 on:
   schedule:
-    - cron: "0 17 * * *"    # 每天 凌晨1点 执行签到
-    - cron: "0 0 */3 * *"   # 每3天 清理日志
-  workflow_dispatch:        # 允许手动触发
+    - cron: "0 17 * * *"
+    - cron: "0 0 */3 * *"
+  workflow_dispatch:
 
 jobs:
   auto_task:
@@ -16,46 +14,45 @@ jobs:
       contents: write
 
     steps:
-      - name: "拉取代码"
+      - name: 拉取代码
         uses: actions/checkout@v4
 
-      - name: "设置Python环境"
+      - name: 设置Python环境
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - name: "安装依赖包"
+      - name: 安装依赖包
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ==========================================
-      # ✅ 【执行脚本 + 写入日志 log.md】
-      # ==========================================
-      - name: "执行B站自动签到并写入日志"
+      - name: 执行B站自动签到并写入日志
         run: |
+          echo "--- 执行时间: $(date +'%Y-%m-%d %H:%M:%S') ---" >> log.md
           python main.py >> log.md 2>&1
 
-      # ==========================================
-      # ✅ 【执行完后：清理本地日志】
-      # ==========================================
-      - name: "清理本地日志（保留最近3天内容）"
+      - name: 提交日志到仓库
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add log.md
+          git commit -m "Update log" || true
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 清理本地日志
         run: |
           if [ -f log.md ]; then
             tail -n 200 log.md > tmp && mv tmp log.md
           fi
 
-      # ==========================================
-      # ✅ 清理GitHub后台运行日志
-      # ==========================================
-      - name: "清理GitHub运行日志"
+      - name: 清理GitHub运行日志
         uses: GitRML/delete-workflow-runs@main
         with:
           retain_days: 1
           keep_minimum_runs: 0
 
-      # ==========================================
-      # ✅ 保活防止60天停止
-      # ==========================================
-      - name: "保活防止60天停止"
-        run: echo "任务正常运行中"
+      - name: 保活防止60天停止
+        run: echo "alive"
